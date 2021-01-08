@@ -1,8 +1,8 @@
 const { src, dest, parallel, series, watch } = require('gulp');
 
 // Load plugins
-const uglify = require('gulp-uglify');
 const rename = require('gulp-rename');
+const terser = require('gulp-terser');
 const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
 const cssnano = require('gulp-cssnano');
@@ -11,21 +11,28 @@ const clean = require('gulp-clean');
 const nunjucks = require('gulp-nunjucks');
 const changed = require('gulp-changed');
 const browserSync = require('browser-sync').create();
+const cache = require('gulp-cache');
 
 const BASE_DIR = 'src/';
 const BASE_DEST = 'dest/';
 
 const filesPath = {
-    scss: BASE_DIR + 'scss/**/*.scss',
-    js: BASE_DIR + 'js/**/*.js',
+    scss: BASE_DIR + 'scss/*.scss',
+    scssFull: BASE_DIR + 'scss/**/*.scss',
+    js: BASE_DIR + 'js/*.js',
+    js3rd: BASE_DIR + 'js/3rd/*.js',
     html: BASE_DIR + 'template/*.{html,njk}',
-    img: BASE_DIR + 'images/**/*'
+    htmlFull: BASE_DIR + 'template/**/*.{html,njk}',
+    img: BASE_DIR + 'images/**/*',
+    font: BASE_DIR + 'fonts/**/*'
 };
 const destPath = {
     scss: BASE_DEST + 'css/',
     js: BASE_DEST + 'js/',
+    js3rd: BASE_DEST + 'js/3rd',
     html: BASE_DEST,
-    img: BASE_DEST + 'images/'
+    img: BASE_DEST + 'images/',
+    font: BASE_DEST + 'fonts/'
 };
 
 function clearTask() {
@@ -38,8 +45,14 @@ function jsTask() {
     return src(filesPath.js)
         .pipe(changed(filesPath.js))
         .pipe(concat('bundle.js'))
-        .pipe(uglify())
+        .pipe(terser())
         .pipe(dest(destPath.js));
+}
+function js3rdTask() {
+    return src(filesPath.js3rd).pipe(dest(destPath.js3rd));
+}
+function fontTask() {
+    return src(filesPath.font).pipe(dest(destPath.font));
 }
 
 function imgTask() {
@@ -72,9 +85,12 @@ function htmlTask() {
 }
 
 function watchTask() {
-    watch(filesPath.scss, scssTask);
+    watch(filesPath.scssFull, scssTask);
     watch(filesPath.js, jsTask);
-    watch(filesPath.html, htmlTask).on('change', browserSync.reload);
+    watch(filesPath.htmlFull, htmlTask).on(
+        'change',
+        series(cache.clearAll, browserSync.reload)
+    );
 }
 
 function browserSyncTask() {
@@ -87,6 +103,6 @@ function browserSyncTask() {
 
 exports.default = series(
     clearTask,
-    parallel(scssTask, jsTask, htmlTask, imgTask),
+    parallel(scssTask, jsTask, htmlTask, imgTask, js3rdTask, fontTask),
     parallel(browserSyncTask, watchTask)
 );
