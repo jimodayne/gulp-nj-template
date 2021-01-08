@@ -44,7 +44,7 @@ function clearTask() {
 function jsTask() {
     return src(filesPath.js)
         .pipe(changed(filesPath.js))
-        .pipe(concat('bundle.js'))
+        .pipe(concat('bundle.min.js'))
         .pipe(terser())
         .pipe(dest(destPath.js));
 }
@@ -78,6 +78,7 @@ function scssTask() {
         .pipe(dest(destPath.scss))
         .pipe(browserSync.stream());
 }
+
 function htmlTask() {
     return src(filesPath.html)
         .pipe(nunjucks.compile())
@@ -96,7 +97,7 @@ function watchTask() {
 function browserSyncTask() {
     browserSync.init({
         server: {
-            baseDir: './dest/'
+            baseDir: BASE_DEST
         }
     });
 }

@@ -1,4 +1,9 @@
 html {
     font-family: $fontFamily;
-    font-size: 16px;
+    background-color: #0f0f0f;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
 }
