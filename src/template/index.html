@@ -1,9 +1,17 @@
-{% extends "partials/layout.njk" %} {% block customStyles %}
-<link rel="stylesheet" href="css/main.min.css" type="text/css" />
-{% endblock %} {% block content %}
-<main>
-    <h1>Hello World</h1>
-</main>
-<script src="./js/bundle.min.js"></script>
+{% extends "partials/layout.njk" %} 
 
+{% block customStyles %}
+<link rel="stylesheet" href="css/main.min.css" type="text/css" />
+{% endblock %} 
+
+{% block content %}
+
+<main>
+    <h1>Hello World!</h1>
+</main>
+{% endblock %}
+
+
+{% block scripts %}
+<script src="./js/bundle.min.js"></script>
 {% endblock %}
