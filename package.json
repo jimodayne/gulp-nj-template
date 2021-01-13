@@ -2,6 +2,7 @@
     "name": "gulp-nj-template",
     "version": "1.0.0",
     "description": "",
+    "type": "module",
     "main": "gulpfile.js",
     "scripts": {
         "start": "gulp",
