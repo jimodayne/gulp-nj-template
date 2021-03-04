@@ -8,13 +8,11 @@ import { filesPath } from '../config/index.js';
 
 const { watch, series } = gulp;
 
+const reload = series(cache.clearAll, browserSync.reload);
 const watchTask = () => {
     watch(filesPath.scssFull, scss);
-    watch(filesPath.js, js);
-    watch(filesPath.htmlFull, html).on(
-        'change',
-        series(cache.clearAll, browserSync.reload)
-    );
+    watch(filesPath.js, js).on('change', reload);
+    watch(filesPath.htmlFull, html).on('change', reload);
 };
 
 export default watchTask;
